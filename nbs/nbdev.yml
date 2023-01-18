@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "dreamai"
+  site-url: "https://HamzaFarhan.github.io/dreamai"
+  description: "A bunch of cool and convenient utility functions."
+  repo-branch: main
+  repo-url: "https://github.com/HamzaFarhan/dreamai"
