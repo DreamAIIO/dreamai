@@ -4,7 +4,4 @@ on:  [workflow_dispatch, pull_request, push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: fastai/workflows/nbdev-ci@master
-      - name: Install stuff
-      - run: conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
+    steps: [uses: fastai/workflows/nbdev-ci@master]      
