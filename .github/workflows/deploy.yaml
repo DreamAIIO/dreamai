@@ -6,8 +6,4 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      uses: fastai/workflows/quarto-ghp@master
-      name: Install stuff
-      run: conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
-
+    steps: [uses: fastai/workflows/quarto-ghp@master]
