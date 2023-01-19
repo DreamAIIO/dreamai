@@ -6,7 +6,4 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-    - name: stuff
-      run: pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
-      uses: fastai/workflows/quarto-ghp@master
+    steps: [uses: fastai/workflows/quarto-ghp@master]
