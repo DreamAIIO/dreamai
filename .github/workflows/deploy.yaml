@@ -10,4 +10,4 @@ jobs:
     - name: Set the uses
       uses: fastai/workflows/quarto-ghp@master
     - name: Install
-      run: conda install pytorch torchvision torchaudio pytorch-cuda=11.6 -c pytorch -c nvidia
+      run: pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
