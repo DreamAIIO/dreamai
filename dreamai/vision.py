@@ -32,10 +32,20 @@ def rgba2rgb(img):
     if len(img.shape) > 2 and img.shape[2] == 4:
         return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
 
-def rgb_read(img, # The image to read. Can be a path/numpy array/PIL Image.
-             shape=None # The shape to resize the image to if it's a path.
-             ):
+def rgb_read(img, shape=None):
     "Read an image from `img` and convert it to RGB."
+    '''
+    Parameters
+    ----------
+    img : str, np.ndarray, PIL.Image
+        The image to read.
+    param2 : tuple, list, np.ndarray, optional
+        The shape to resize the image to if it's a path.
+        
+    Returns
+    -------
+    The image as a numpy array or the original image if it's not a path.
+    '''
     if not path_or_str(img):
         return img
     img = bgr2rgb(cv2.imread(str(img)))
