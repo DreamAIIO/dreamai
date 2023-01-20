@@ -7,6 +7,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from pathlib import Path
+from functools import partial
 from yaml import load, Loader
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont

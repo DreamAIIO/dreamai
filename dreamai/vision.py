@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['bgr2rgb', 'rgb2bgr', 'gray2rgb', 'rgb2gray', 'rgb2rgba', 'bgra2rgb', 'rgba2rgb', 'rgb_read', 'tensor_to_img',
-           'plt_show', 'is_clip', 'get_hw']
+           'plt_show', 'get_hw']
 
 # %% ../nbs/00_vision.ipynb 3
 from .imports import *
@@ -68,10 +68,6 @@ def plt_show(im, cmap=None, title='', figsize=(7,7)):
     plt.imshow(im, cmap=cmap)
     plt.title(title)
     plt.show()
-
-def is_clip(x):
-    "Return `True` if `x` is a `ProntoClip` or `moviepy` object."
-    return type(x).__name__ == 'ProntoClip' or 'moviepy' in str(type(x))
 
 def get_hw(x):
     "Return the height and width of `x`."
