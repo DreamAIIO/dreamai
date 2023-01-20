@@ -2,7 +2,7 @@
 
 # %% auto 0
 __all__ = ['load_yaml', 'save_obj', 'load_obj', 'yml_to_pip', 'params', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict',
-           'locals_to_params']
+           'locals_to_params', 'list_map', 'add_extension_', 'add_extension']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -46,6 +46,7 @@ def dict_keys(d):
     return list(d.keys())
 
 def sort_dict(d, by_value=False):
+    "Sort a dictionary by key by default or by value if `by_value` is True."
     idx = int(by_value)
     return {k: v for k, v in sorted(d.items(), key=lambda item:item[idx])}
 
@@ -68,3 +69,23 @@ def locals_to_params(l, omit=[], expand=['kwargs']):
         if k in omit:
             del l[k]
     return l
+
+def list_map(l, m):
+    "Apply `m` to each element of `l`."
+    return list(pd.Series(l).apply(m))
+
+def add_extension_(x, data_path='', ext='.jpg', make_str=True):
+    "Helper function for add_extension."
+    if ext[0] != '.': ext = '.'+ext
+    x = Path(data_path)/(x+ext)
+    if make_str:
+        return str(x)
+    return x
+
+def add_extension(l:list, # List of file names or file paths
+                  data_path='', # Path to the data folder. It will be added before the file paths.
+                  ext:str='.jpg', # Extension to add to the file names.
+                  make_str=True): # If True, convert the file paths to strings.
+    "Add an extension to the file names/paths in list `l`."
+    fn = partial(add_extension_, data_path=data_path, ext=ext, make_str=make_str)
+    return list_map(l, fn)
