@@ -5,6 +5,7 @@ import os
 import cv2
 import copy
 import pickle
+import random
 import operator
 import numpy as np
 import pandas as pd

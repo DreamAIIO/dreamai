@@ -6,7 +6,7 @@ __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_i
            'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'load_yaml', 'save_obj',
            'load_obj', 'yml_to_pip', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params',
            'list_map', 'add_extension_', 'add_extension', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn',
-           'filter_dict']
+           'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -211,3 +211,32 @@ def filter_dict(d,
         if fn(k):
             d2[k] = d[k]
     return d2
+
+def setify(o): return o if isinstance(o,set) else set(list(o))
+
+def _get_files(p, fs, extensions=None):
+    p = Path(p)
+    res = [p/f for f in fs if not f.startswith('.')
+           and ((not extensions) or f'.{f.split(".")[-1].lower()}' in extensions)]
+    return res
+
+def get_files(path, extensions=None, recurse=True, folders=None, followlinks=True, make_str=False):
+    "Get all the files in `path` with optional `extensions`, optionally with `recurse`, only in `folders`, if specified."
+    if folders is None:
+        folders = list([])
+    path = Path(path)
+    if extensions is not None:
+        extensions = setify(extensions)
+        extensions = {e.lower() for e in extensions}
+    if recurse:
+        res = []
+        for i,(p,d,f) in enumerate(os.walk(path, followlinks=followlinks)): # returns (dirpath, dirnames, filenames)
+            if len(folders) !=0 and i==0: d[:] = [o for o in d if o in folders]
+            else:                         d[:] = [o for o in d if not o.startswith('.')]
+            if len(folders) !=0 and i==0 and '.' not in folders: continue
+            res += _get_files(p, f, extensions)
+    else:
+        f = [o.name for o in os.scandir(path) if o.is_file()]
+        res = _get_files(path, f, extensions)
+    if make_str: res = [str(o) for o in res]
+    return list(res)
