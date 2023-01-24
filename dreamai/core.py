@@ -3,10 +3,10 @@
 # %% auto 0
 __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_iter', 'is_dict', 'is_df', 'is_str', 'is_int',
            'is_float', 'is_array', 'is_pilimage', 'is_tensor', 'is_set', 'is_path', 'path_or_str', 'is_norm', 'params',
-           'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'load_yaml', 'save_obj',
-           'load_obj', 'yml_to_pip', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params',
-           'list_map', 'add_extension_', 'add_extension', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn',
-           'filter_dict', 'setify', 'get_files']
+           'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'path_name', 'path_stem',
+           'extend_path_name', 'end_of_path', 'add_ext_to_path', 'last_modified', 'load_yaml', 'save_obj', 'load_obj',
+           'yml_to_pip', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map',
+           'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -95,6 +95,41 @@ def is_sequential(x):
 def is_clip(x):
     return type(x).__name__ == 'ProntoClip' or 'moviepy' in str(type(x))
 
+def path_name(x):
+    return Path(x).name
+
+def path_stem(x):
+    return Path(x).stem
+
+def extend_path_name(p, s='_2'):
+    "Add `s` to the name of a path `p`. Before the extension."
+    p = Path(p)
+    return p.parent/(p.stem+s+p.suffix)
+
+def end_of_path(p, n=2):
+    "Get the last `n` parts of a path `p`."
+    parts = p.parts
+    p = Path(parts[-n])
+    for i in range(-(n-1), 0):
+        p/=parts[i]
+    return p
+
+def add_ext_to_path(p, ext='pkl'):
+    "Add an extension to a path `p` if it doesn't have one."
+    if ext[0] != '.':
+        ext = '.'+ext
+    if len(Path(p).suffix) == 0:
+        p = str(p)
+        if p[-1] != '.':
+            p+=ext
+        else:
+            p+=ext[1:]
+    return p
+
+def last_modified(x):
+    "Get the last modified time of a file."
+    return x.stat().st_ctime
+
 def load_yaml(file):
     with open(file) as f:
         env = load(f, Loader=Loader)
@@ -158,22 +193,6 @@ def locals_to_params(l, omit=[], expand=['kwargs']):
 def list_map(l, m):
     "Apply `m` to each element of `l`."
     return list(pd.Series(l).apply(m))
-
-def add_extension_(x, data_path='', ext='.jpg', make_str=True):
-    "Helper function for add_extension."
-    if ext[0] != '.': ext = '.'+ext
-    x = Path(data_path)/(x+ext)
-    if make_str:
-        return str(x)
-    return x
-
-def add_extension(l:list, # List of file names or file paths
-                  data_path='', # Path to the data folder. It will be added before the file paths.
-                  ext:str='.jpg', # Extension to add to the file names.
-                  make_str=True): # If True, convert the file paths to strings.
-    "Add an extension to the file names/paths in list `l`."
-    fn = partial(add_extension_, data_path=data_path, ext=ext, make_str=make_str)
-    return list_map(l, fn)
 
 def next_batch(dl):
     "Get the next batch from a dataloader `dl`."
