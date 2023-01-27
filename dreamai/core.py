@@ -5,9 +5,9 @@ __all__ = ['default_device', 'flatten_list', 'noop', 'is_list', 'is_tuple', 'lis
            'is_str', 'is_int', 'is_float', 'is_array', 'is_pilimage', 'is_tensor', 'is_set', 'is_path', 'path_or_str',
            'is_norm', 'params', 'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'path_name',
            'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'add_ext_to_path', 'last_modified',
-           'load_yaml', 'save_obj', 'load_obj', 'yml_to_pip', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict',
-           'locals_to_params', 'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict',
-           'setify', 'get_files']
+           'load_yaml', 'save_obj', 'load_obj', 'yml_to_pip', 'update_pip_req', 'merge_dicts', 'dict_values',
+           'dict_keys', 'sort_dict', 'locals_to_params', 'list_map', 'next_batch', 'model_children', 'replace_dict_key',
+           'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -151,12 +151,22 @@ def save_obj(path, obj):
 def load_obj(path):
     with open(path, 'rb') as f:
         return pickle.load(f)
-
+    
 def yml_to_pip(yml):
     "Get pip packages from a conda environment `yml` file."
     env = load_yaml(yml)
-    env_pip = env['dependencies'][-1]['pip']
-    return " ".join(env_pip).replace('==', '>=')
+    env_pip =  env['dependencies'][-1]['pip']
+    return " ".join([x.split('==')[0] for x in env_pip])
+
+def update_pip_req(yml, settings):
+    "Update the pip_requirements in settings.ini from a conda environment `yml` file."
+    env_pip = yml_to_pip(yml)
+    config = ConfigParser(delimiters=['='], allow_no_value=True)
+    config.read(settings)
+    cfg = config['DEFAULT']
+    config.set('DEFAULT', 'pip_requirements', env_pip)
+    with open(settings, 'w') as configfile:
+        config.write(configfile)
 
 def merge_dicts(d1,d2):
     d = {}
