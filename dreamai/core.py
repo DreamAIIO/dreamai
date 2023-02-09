@@ -158,13 +158,13 @@ def yml_to_pip(yml, remove_eq=True):
     env_pip = env['dependencies'][-1]['pip']
     pip_list = []
     for x in env_pip:
-        if remove_eq:
-            x = x.split('==')[0].split('>=')[0]
         if 'nvidia' not in x:
+            if remove_eq:
+                x = x.split('==')[0].split('>=')[0]
             pip_list.append(x)
     # if remove_eq:
         # env_pip = [x.split('==')[0].split('>=')[0] for x in env_pip]
-    return " ".join(env_pip)
+    return " ".join(pip_list)
 
 def set_pip_req(yml, settings, remove_eq=True):
     "Update the pip_requirements in settings.ini from a conda environment `yml` file."
