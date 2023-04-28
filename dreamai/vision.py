@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['image_extensions', 'remove_images', 'bgr2rgb', 'rgb2bgr', 'gray2rgb', 'rgb2gray', 'rgb2rgba', 'bgra2rgb', 'rgba2rgb',
-           'rgb_read', 'c1_read', 'tensor_to_img', 'plt_show', 'get_hw', 'get_image_files', 'to_pil', 'add_alpha',
-           'has_alpha', 'color_to_rgb', 'solid_color_img', 'solid_color_img_like', 'get_pos_factors', 'get_pos_',
-           'get_pos', 'paste_img']
+           'rgb_read', 'c1_read', 'tensor_to_img', 'plt_show', 'show_img', 'get_hw', 'get_image_files', 'to_pil',
+           'add_alpha', 'has_alpha', 'color_to_rgb', 'solid_color_img', 'solid_color_img_like', 'get_pos_factors',
+           'get_pos_', 'get_pos', 'paste_img']
 
 # %% ../nbs/01_vision.ipynb 3
 from .imports import *
@@ -77,6 +77,13 @@ def plt_show(im, cmap=None, title='', figsize=(7,7)):
     plt.imshow(im, cmap=cmap)
     plt.title(title)
     plt.show()
+
+def show_img(img, cmap=None, title='', figsize=(7,7)):
+    if path_or_str(img):
+        imgs = resolve_data_path(img)
+    elif is_img(img):
+        imgs = [img]
+    [plt_show(img, cmap=cmap, title=title, figsize=figsize) for img in imgs]
 
 def get_hw(x):
     "Return the height and width of `x`."
