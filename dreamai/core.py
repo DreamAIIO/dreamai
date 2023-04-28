@@ -2,12 +2,12 @@
 
 # %% auto 0
 __all__ = ['default_device', 'flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_iter', 'is_dict', 'is_df',
-           'is_str', 'is_int', 'is_float', 'is_array', 'is_pilimage', 'is_tensor', 'is_set', 'is_path', 'path_or_str',
-           'is_norm', 'params', 'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'path_name',
-           'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'add_ext_to_path', 'last_modified',
-           'load_yaml', 'save_obj', 'load_obj', 'yml_to_pip', 'set_pip_req', 'merge_dicts', 'dict_values', 'dict_keys',
-           'sort_dict', 'locals_to_params', 'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn',
-           'filter_dict', 'setify', 'get_files']
+           'is_str', 'is_int', 'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_tensor', 'is_set', 'is_path',
+           'path_or_str', 'is_norm', 'params', 'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential',
+           'is_clip', 'path_name', 'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'last_modified',
+           'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path', 'yml_to_pip', 'set_pip_req', 'merge_dicts',
+           'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map', 'next_batch', 'model_children',
+           'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -67,6 +67,9 @@ def is_array(x):
 def is_pilimage(x):
     return 'PIL' in str(type(x))
 
+def is_img(x):
+    return is_array(x) or is_pilimage(x)
+
 def is_tensor(x):
     return isinstance(x, torch.Tensor)
 
@@ -123,18 +126,6 @@ def end_of_path(p, n=2):
         p/=parts[i]
     return p
 
-def add_ext_to_path(p, ext='pkl'):
-    "Add an extension to a path `p` if it doesn't have one."
-    if ext[0] != '.':
-        ext = '.'+ext
-    if len(Path(p).suffix) == 0:
-        p = str(p)
-        if p[-1] != '.':
-            p+=ext
-        else:
-            p+=ext[1:]
-    return p
-
 def last_modified(x):
     "Get the last modified time of a file."
     return x.stat().st_ctime
@@ -151,6 +142,20 @@ def save_obj(path, obj):
 def load_obj(path):
     with open(path, 'rb') as f:
         return pickle.load(f)
+
+def resolve_data_path(data_path):
+    if not is_list(data_path): data_path = [data_path]
+    data_path = flatten_list(data_path)
+    paths = []
+    for dp in data_path:
+        dp = Path(dp)
+        if not dp.exists():
+            raise Exception(f'Path {dp} does not exist.')
+        if dp.is_dir():
+            paths.append(dp.iterdir())
+        else:
+            paths.append([dp])
+    return chain(*paths)
     
 def yml_to_pip(yml, remove_eq=True):
     "Get pip packages from a conda environment `yml` file."
