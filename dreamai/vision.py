@@ -79,10 +79,10 @@ def plt_show(im, cmap=None, title='', figsize=(7,7)):
     plt.show()
 
 def show_img(img, cmap=None, title='', figsize=(7,7)):
-    if path_or_str(img):
-        imgs = resolve_data_path(img)
-    elif is_img(img):
+    if not is_list(img):
         imgs = [img]
+    else:
+        imgs = img
     [plt_show(img, cmap=cmap, title=title, figsize=figsize) for img in imgs]
 
 def get_hw(x):

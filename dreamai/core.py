@@ -148,13 +148,14 @@ def resolve_data_path(data_path):
     data_path = flatten_list(data_path)
     paths = []
     for dp in data_path:
-        dp = Path(dp)
-        if not dp.exists():
-            raise Exception(f'Path {dp} does not exist.')
-        if dp.is_dir():
-            paths.append(dp.iterdir())
-        else:
-            paths.append([dp])
+        if path_or_str(dp):
+            dp = Path(dp)
+            if not dp.exists():
+                raise Exception(f'Path {dp} does not exist.')
+            if dp.is_dir():
+                paths.append(dp.iterdir())
+            else:
+                paths.append([dp])
     return chain(*paths)
     
 def yml_to_pip(yml, remove_eq=True):
