@@ -70,9 +70,9 @@ def tensor_to_img(t):
 def plt_show(im, cmap=None, title='', figsize=(7,7)):
     if path_or_str(im):
         im = rgb_read(im)
-    if is_tensor(im):
-        im = tensor_to_img(im)
-        if is_list(im): im = im[0]
+    # if is_tensor(im):
+        # im = tensor_to_img(im)
+        # if is_list(im): im = im[0]
     fig=plt.figure(figsize=figsize)
     plt.imshow(im, cmap=cmap)
     plt.title(title)
