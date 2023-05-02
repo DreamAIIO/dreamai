@@ -23,3 +23,7 @@ from configparser import ConfigParser
 from imutils import resize as resize_img
 from PIL import Image, ImageDraw, ImageFont
 from typing import Iterable,Generator,Sequence,Iterator,List,Set,Dict,Union,Optional,Tuple
+
+from fastcore.foundation import is_bool, L
+from fastcore.basics import merge as merge_dicts
+from fastcore.basics import chunked, store_attr, camel2snake, snake2camel, flatten
