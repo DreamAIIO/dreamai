@@ -3,11 +3,10 @@
 # %% auto 0
 __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_iter', 'is_dict', 'is_df', 'is_str', 'is_int',
            'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_norm', 'params',
-           'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_sequential', 'is_clip', 'path_name', 'path_stem',
-           'path_suffix', 'extend_path_name', 'end_of_path', 'last_modified', 'load_yaml', 'save_obj', 'load_obj',
-           'resolve_data_path', 'yml_to_pip', 'set_pip_req', 'merge_dicts', 'dict_values', 'dict_keys', 'sort_dict',
-           'locals_to_params', 'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict',
-           'setify', 'get_files']
+           'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_clip', 'path_name', 'path_stem', 'path_suffix',
+           'extend_path_name', 'end_of_path', 'last_modified', 'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path',
+           'yml_to_pip', 'set_pip_req', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map',
+           'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -60,8 +59,12 @@ def is_int(x):
 def is_float(x):
     return isinstance(x, float)
 
+# def is_array(x):
+#     return isinstance(x, np.ndarray)
+
 def is_array(x):
-    return isinstance(x, np.ndarray)
+    "`True` if `x` supports `__array__` or `iloc`"
+    return hasattr(x,'__array__') or hasattr(x,'iloc')
 
 def is_pilimage(x):
     return 'PIL' in str(type(x))
@@ -97,8 +100,8 @@ def is_unfrozen(model):
 def is_subscriptable(x):
     return hasattr(x, '__getitem__')
 
-def is_sequential(x):
-    return isinstance(x, nn.Sequential)
+# def is_sequential(x):
+    # return isinstance(x, nn.Sequential)
 
 def is_clip(x):
     return type(x).__name__ == 'ProntoClip' or 'moviepy' in str(type(x))
@@ -144,7 +147,7 @@ def load_obj(path):
 
 def resolve_data_path(data_path):
     if not is_list(data_path): data_path = [data_path]
-    data_path = flatten_list(data_path)
+    data_path = flatten(data_path)
     paths = []
     for dp in data_path:
         if path_or_str(dp):
@@ -180,14 +183,6 @@ def set_pip_req(yml, settings, remove_eq=True):
     config.set('DEFAULT', 'pip_requirements', env_pip)
     with open(settings, 'w') as configfile:
         config.write(configfile)
-
-def merge_dicts(d1,d2):
-    d = {}
-    for k in d1:
-        d[k] = d1[k]
-    for k in d2:
-        d[k] = d2[k]
-    return d
 
 def dict_values(d):
     "Get the values of a dictionary sorted by key."
