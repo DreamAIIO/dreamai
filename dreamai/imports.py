@@ -24,7 +24,7 @@ from functools import reduce, partial
 from configparser import ConfigParser
 from imutils import resize as resize_img
 from PIL import Image, ImageDraw, ImageFont
-from typing import Iterable,Generator,Sequence,Iterator,List,Set,Dict,Union,Optional,Tuple
+from typing import Iterable, Generator, Sequence, Iterator, List, Set, Dict, Union, Optional, Tuple
 
 from fastcore.foundation import is_bool, L
 from fastcore.basics import merge as merge_dicts
