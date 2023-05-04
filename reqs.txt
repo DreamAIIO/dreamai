@@ -1,0 +1,10 @@
+opencv_python_headless
+pandas
+matplotlib
+imutils
+PyYAML
+fastcore
+opencv_python
+numpy
+Pillow
+setuptools

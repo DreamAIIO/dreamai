@@ -5,8 +5,9 @@ __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_i
            'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_norm', 'params',
            'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_clip', 'path_name', 'path_stem', 'path_suffix',
            'extend_path_name', 'end_of_path', 'last_modified', 'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path',
-           'yml_to_pip', 'set_pip_req', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map',
-           'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
+           'yml_to_pip', 'reqs_to_pip', 'set_pip_req', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params',
+           'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify',
+           'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -160,13 +161,13 @@ def resolve_data_path(data_path):
                 paths.append([dp])
     return chain(*paths)
     
-def yml_to_pip(yml, less_eq=True, remove_eq=False):
+def yml_to_pip(yml, less_eq=True, remove_eq=False, ignore=['nvidia']):
     "Get pip packages from a conda environment `yml` file."
     env = load_yaml(yml)
     env_pip = env['dependencies'][-1]['pip']
     pip_list = []
     for x in env_pip:
-        if 'nvidia' not in x:
+        if not any([ign.lower() in x.lower() for ign in ignore]):
             if remove_eq:
                 x = x.split('==')[0].split('>=')[0]
             elif less_eq and 'torch' not in x:
@@ -174,11 +175,25 @@ def yml_to_pip(yml, less_eq=True, remove_eq=False):
             pip_list.append(x)
     # if remove_eq:
         # env_pip = [x.split('==')[0].split('>=')[0] for x in env_pip]
-    return " ".join(pip_list)
+    return " ".join(np.unique(pip_list))
 
-def set_pip_req(yml, settings, less_eq=True, remove_eq=False):
+def reqs_to_pip(reqs, less_eq=True, remove_eq=False, ignore=['nvidia']):
+    pip_list = []
+    with open(reqs) as f:
+        for x in f.readlines():
+            x = x.strip()
+            if not any([ign.lower() in x.lower() for ign in ignore]):
+                if remove_eq:
+                    x = x.split('==')[0].split('>=')[0]
+                elif less_eq and 'torch' not in x:
+                    x = x.replace('==', '<=')
+                pip_list.append(x)
+    return " ".join(np.unique(pip_list))
+
+def set_pip_req(req_file, settings, less_eq=True, remove_eq=False, ignore=['nvidia']):
     "Update the pip_requirements in settings.ini from a conda environment `yml` file."
-    env_pip = yml_to_pip(yml, less_eq=less_eq, remove_eq=remove_eq)
+    # env_pip = yml_to_pip(yml, less_eq=less_eq, remove_eq=remove_eq, ignore=ignore)
+    env_pip = reqs_to_pip(req_file, less_eq=less_eq, remove_eq=remove_eq, ignore=ignore)
     config = ConfigParser(delimiters=['='], allow_no_value=True)
     config.read(settings)
     cfg = config['DEFAULT']
