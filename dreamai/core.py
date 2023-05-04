@@ -160,7 +160,7 @@ def resolve_data_path(data_path):
                 paths.append([dp])
     return chain(*paths)
     
-def yml_to_pip(yml, remove_eq=True):
+def yml_to_pip(yml, less_eq=True, remove_eq=False):
     "Get pip packages from a conda environment `yml` file."
     env = load_yaml(yml)
     env_pip = env['dependencies'][-1]['pip']
@@ -169,14 +169,16 @@ def yml_to_pip(yml, remove_eq=True):
         if 'nvidia' not in x:
             if remove_eq:
                 x = x.split('==')[0].split('>=')[0]
+            elif less_eq and 'torch' not in x:
+                x = x.replace('==', '<=')
             pip_list.append(x)
     # if remove_eq:
         # env_pip = [x.split('==')[0].split('>=')[0] for x in env_pip]
     return " ".join(pip_list)
 
-def set_pip_req(yml, settings, remove_eq=True):
+def set_pip_req(yml, settings, less_eq=True, remove_eq=False):
     "Update the pip_requirements in settings.ini from a conda environment `yml` file."
-    env_pip = yml_to_pip(yml, remove_eq=remove_eq)
+    env_pip = yml_to_pip(yml, less_eq=less_eq, remove_eq=remove_eq)
     config = ConfigParser(delimiters=['='], allow_no_value=True)
     config.read(settings)
     cfg = config['DEFAULT']
