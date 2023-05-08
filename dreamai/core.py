@@ -2,12 +2,11 @@
 
 # %% auto 0
 __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_iter', 'is_dict', 'is_df', 'is_str', 'is_int',
-           'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_norm', 'params',
-           'is_frozen', 'is_unfrozen', 'is_subscriptable', 'is_clip', 'path_name', 'path_stem', 'path_suffix',
-           'extend_path_name', 'end_of_path', 'last_modified', 'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path',
-           'yml_to_pip', 'reqs_to_pip', 'set_pip_req', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params',
-           'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify',
-           'get_files']
+           'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_subscriptable',
+           'is_clip', 'path_name', 'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'last_modified',
+           'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path', 'yml_to_pip', 'reqs_to_pip', 'set_pip_req',
+           'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map', 'next_batch', 'model_children',
+           'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -73,9 +72,6 @@ def is_pilimage(x):
 def is_img(x):
     return is_array(x) or is_pilimage(x)
 
-# def is_tensor(x):
-    # return isinstance(x, torch.Tensor)
-
 def is_set(x):
     return isinstance(x, set)
 
@@ -85,24 +81,8 @@ def is_path(x):
 def path_or_str(x):
     return is_str(x) or is_path(x)
 
-def is_norm(x):
-    return type(x).__name__ == 'Normalize'
-
-def params(m):
-    "Return all parameters of `m`."
-    return [p for p in m.parameters()]
-
-def is_frozen(model):
-    return np.array([not p.requires_grad for p in (params(model))]).all()
-
-def is_unfrozen(model):
-    return np.array([p.requires_grad for p in (params(model))]).all()
-
 def is_subscriptable(x):
     return hasattr(x, '__getitem__')
-
-# def is_sequential(x):
-    # return isinstance(x, nn.Sequential)
 
 def is_clip(x):
     return type(x).__name__ == 'ProntoClip' or 'moviepy' in str(type(x))
