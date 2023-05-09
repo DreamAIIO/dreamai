@@ -2,9 +2,9 @@
 
 # %% auto 0
 __all__ = ['image_extensions', 'remove_images', 'bgr2rgb', 'rgb2bgr', 'gray2rgb', 'rgb2gray', 'rgb2rgba', 'bgra2rgb', 'rgba2rgb',
-           'rgb_read', 'c1_read', 'tensor_to_img', 'plt_show', 'show_img', 'get_hw', 'get_image_files', 'to_pil',
-           'add_alpha', 'has_alpha', 'color_to_rgb', 'solid_color_img', 'solid_color_img_like', 'get_pos_factors',
-           'get_pos_', 'get_pos', 'paste_img']
+           'rgb_read', 'c1_read', 'plt_show', 'show_img', 'get_hw', 'get_image_files', 'to_pil', 'add_alpha',
+           'has_alpha', 'color_to_rgb', 'solid_color_img', 'solid_color_img_like', 'get_pos_factors', 'get_pos_',
+           'get_pos', 'paste_img']
 
 # %% ../nbs/01_vision.ipynb 3
 from .imports import *
@@ -61,11 +61,6 @@ def rgb_read(img, shape=None):
 def c1_read(img):
     "Read an image from `img` and convert it to grayscale."
     return cv2.imread(str(img), 0)
-
-def tensor_to_img(t):
-    if t.dim() > 3:
-        return [np.array(np.transpose(t_,(1,2,0))) for t_ in t]
-    return np.array(np.transpose(t,(1,2,0)))
 
 def plt_show(im, cmap=None, title='', figsize=(7,7)):
     if path_or_str(im):
