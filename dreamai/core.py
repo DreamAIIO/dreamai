@@ -103,6 +103,7 @@ def extend_path_name(p, s='_2'):
 
 def end_of_path(p, n=2):
     "Get the last `n` parts of a path `p`."
+    p = Path(p)
     parts = p.parts
     p = Path(parts[-n])
     for i in range(-(n-1), 0):
