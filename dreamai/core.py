@@ -5,8 +5,8 @@ __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_i
            'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_subscriptable',
            'is_clip', 'path_name', 'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'last_modified',
            'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path', 'yml_to_pip', 'reqs_to_pip', 'set_pip_req',
-           'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map', 'next_batch', 'model_children',
-           'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
+           'uniq_lines', 'update_settings', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map',
+           'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
@@ -181,6 +181,15 @@ def set_pip_req(req_file, settings, less_eq=True, remove_eq=False, ignore=['nvid
     config.set('DEFAULT', 'pip_requirements', env_pip)
     with open(settings, 'w') as configfile:
         config.write(configfile)
+
+def uniq_lines(file):
+    lines = set(open(file).readlines())
+    open(file, 'w').writelines(lines)
+    
+def update_settings(path='dreamai_pdf'):
+    path = Path(path)
+    uniq_lines(path/'reqs.txt')
+    set_pip_req(path/'reqs.txt', path/'settings.ini')
 
 def dict_values(d):
     "Get the values of a dictionary sorted by key."
