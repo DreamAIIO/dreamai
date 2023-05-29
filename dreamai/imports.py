@@ -13,7 +13,6 @@ import imutils
 import operator
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
 from wasabi import msg
 from pathlib import Path
 from pprint import pprint
@@ -26,7 +25,6 @@ from functools import reduce, partial
 from configparser import ConfigParser
 from imutils import resize as resize_img
 from PIL import Image, ImageDraw, ImageFont
-from tqdm.notebook import tqdm as tqdm_notebook
 from typing import Iterable, Generator, Sequence, Iterator, List, Set, Dict, Union, Optional, Tuple
 
 from fastcore.foundation import is_bool
