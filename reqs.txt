@@ -1,10 +1,12 @@
-Pillow
+pandas
+imutils
 setuptools
 opencv_python
-fastcore
-imutils
+wasabi
 matplotlib
-pandas
 numpy
-PyYAML
+tqdm
 opencv_python_headless
+Pillow
+fastcore
+PyYAML
