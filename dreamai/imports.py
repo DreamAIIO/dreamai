@@ -13,6 +13,7 @@ import imutils
 import operator
 import numpy as np
 import pandas as pd
+from wasabi import msg
 from pathlib import Path
 from pprint import pprint
 from matplotlib import colors
