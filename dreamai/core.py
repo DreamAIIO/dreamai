@@ -249,11 +249,9 @@ def locals_to_params(l, omit=[], expand=["kwargs"]):
     "Convert all the local variables to a dictionary of parameters."
     if "kwargs" not in expand:
         expand.append("kwargs")
+    omit += ["self", "__class__"]
+    l = {k: v for k, v in l.items() if k not in omit}
     l = copy.deepcopy(l)
-    if "self" in l.keys():
-        del l["self"]
-    if "__class__" in l.keys():
-        del l["__class__"]
     keys = dict_keys(l)
     for k in keys:
         if k in expand:
@@ -358,4 +356,3 @@ def get_files(
     if make_str:
         res = [str(o) for o in res]
     return list(res)
-

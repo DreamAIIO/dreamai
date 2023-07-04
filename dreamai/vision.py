@@ -10,7 +10,6 @@ __all__ = ['image_extensions', 'remove_images', 'bgr2rgb', 'rgb2bgr', 'gray2rgb'
 from .imports import *
 from .core import *
 
-
 # %% ../nbs/01_vision.ipynb 4
 image_extensions = {
     ".art",
@@ -341,4 +340,3 @@ def paste_img(img, bg, pos=("center", "center"), relative=True):
     out_rgba = np.dstack((out_rgb, out_alpha * 255)).astype(np.uint8)
     bg[r1:r2, c1:c2] = out_rgba
     return bg
-
