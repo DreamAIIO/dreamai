@@ -4,13 +4,13 @@
 __all__ = ['flatten_list', 'noop', 'is_list', 'is_tuple', 'list_or_tuple', 'is_iter', 'is_dict', 'is_df', 'is_str', 'is_int',
            'is_float', 'is_array', 'is_pilimage', 'is_img', 'is_set', 'is_path', 'path_or_str', 'is_subscriptable',
            'is_clip', 'path_name', 'path_stem', 'path_suffix', 'extend_path_name', 'end_of_path', 'last_modified',
-           'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path', 'yml_to_pip', 'reqs_to_pip', 'set_pip_req',
-           'uniq_lines', 'update_settings', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params', 'list_map',
-           'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify', 'get_files']
+           'load_yaml', 'save_obj', 'load_obj', 'resolve_data_path', 'find_alternate_path', 'yml_to_pip', 'reqs_to_pip',
+           'set_pip_req', 'uniq_lines', 'update_settings', 'dict_values', 'dict_keys', 'sort_dict', 'locals_to_params',
+           'list_map', 'next_batch', 'model_children', 'replace_dict_key', 'proc_fn', 'filter_dict', 'setify',
+           'get_files']
 
 # %% ../nbs/00_core.ipynb 3
 from .imports import *
-
 
 # %% ../nbs/00_core.ipynb 4
 # def default_device(device=None):
@@ -173,6 +173,22 @@ def resolve_data_path(data_path):
             else:
                 paths.append([dp])
     return chain(*paths)
+
+
+def find_alternate_path(path, first_idx=0, verbose=True):
+    path = Path(path)
+    idx = first_idx
+    file_start = "/".join(path.parts[:-1])
+    if file_start[:2] == "//":
+        file_start = file_start[1:]
+    file_start = Path(file_start)
+    file_end = path.stem
+    new_path = (file_start / file_end).with_suffix(path.suffix)
+    while new_path.exists():
+        new_path = (file_start / f"{file_end}_{idx}").with_suffix(path.suffix)
+        idx += 1
+    msg.info(f"{path} already exists. Using {new_path} instead.", spaced=True, show=verbose)
+    return new_path
 
 
 def yml_to_pip(yml, less_eq=True, remove_eq=False, ignore=["nvidia"]):
